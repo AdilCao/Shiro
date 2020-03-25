@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!--1.扫描包注解-->
+    <context:component-scan base-package="com.itheima.web"></context:component-scan>
+
+	<!--2.视图解析器-->
+	<!-- return "forward:/WEB-INF/pages/company/company-list.jsp";-->
+	<bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/pages/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	<!--数据库有一些数据没保存-->
+	<!--文件上传解析器-->
+	<!-- id 的值是固定的-->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 设置上传文件的最大尺寸为 5MB -->
+		<property name="maxUploadSize">
+			<value>5242880</value>
+		</property>
+	</bean>
+
+	<!--异常处理器-->
+	<bean class="com.itheima.web.controller.exception.MyException"></bean>
+
+
+	<!--日期处理器-->
+	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<property name="converters">
+			<list>
+				<!--将日期转换器交由springmvc管理-->
+				<bean class="com.itheima.web.controller.converter.MyStringToDateConverter"></bean>
+			</list>
+		</property>
+	</bean>
+	<!--3.支持注解解析 处理器映射器-->
+	<mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>
+
+
+	<!--切面的注解支持-->
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+</beans>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.system.RoleDao">
+    <resultMap id="BaseResultMap" type="com.itheima.domain.system.Role">
+        <id column="role_id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="remark" property="remark"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="company_id" property="companyId"/>
+        <result column="company_name" property="companyName"/>
+    </resultMap>
+
+    <select id="findAll" parameterType="string" resultMap="BaseResultMap">
+        select * from pe_role where company_id=#{companyId}
+    </select>
+
+    <select id="findById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from pe_role where role_id = #{id}
+    </select>
+
+    <delete id="delete" parameterType="java.lang.String">
+        delete from pe_role where role_id = #{id}
+    </delete>
+
+    <insert id="save" parameterType="com.itheima.domain.system.Role">
+        insert into pe_role (role_id, name, remark, order_no,company_id, company_name)
+        values (#{id}, #{name}, #{remark}, #{orderNo}, #{companyId}, #{companyName})
+    </insert>
+
+    <update id="update" parameterType="com.itheima.domain.system.Role">
+        update pe_role
+        set name = #{name},
+          remark = #{remark},
+          order_no = #{orderNo}
+        where role_id = #{id}
+    </update>
+
+    <!--
+    //根据角色id将数据库原本的数据删除
+    void deleteRoleModuleByRoleId(String roleid);
+    -->
+    <delete id="deleteRoleModuleByRoleId" parameterType="string">
+        DELETE FROM pe_role_module WHERE role_id=#{roleId}
+    </delete>
+
+    <!--
+    //给角色添加新的权限即可
+    void insertRoleModule(@Param("roleid") String roleid, @Param("moduleId") String moduleId);
+    //1.args[索引]
+    //2.param[索引]
+    //3.在传递参数的时候 @Param("key") 声明在xml使用的名称
+    -->
+    <insert id="insertRoleModule" >
+        INSERT INTO pe_role_module VALUES(#{roleid} , #{moduleId})
+    </insert>
+
+
+    <!--
+    //根据用户的id查询 角色的信息
+    List<Role> findByUid(String id);
+    -->
+    <select id="findByUid" parameterType="string" resultMap="BaseResultMap">
+        SELECT * FROM `pe_role` WHERE role_id IN (
+        SELECT role_id FROM `pe_role_user` WHERE user_id = #{userId}
+        )
+    </select>
+
+</mapper>

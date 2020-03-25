@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.company.CompanyDao">
+    <!--public List<Company> findAll();-->
+    <!--配置
+        1.主键
+        2.普通字段
+        3.外键
+    -->
+    <resultMap id="BaseResultMap" type="com.itheima.domain.company.Company">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="expiration_date" property="expirationDate"></result>
+        <result column="address" property="address"></result>
+        <result column="license_id" property="licenseId"></result>
+        <result column="representative" property="representative"></result>
+        <result column="phone" property="phone"></result>
+        <result column="company_size" property="companySize"></result>
+        <result column="industry" property="industry"></result>
+        <result column="remarks" property="remarks"></result>
+        <result column="state" property="state"></result>
+        <result column="balance" property="balance"></result>
+        <result column="city" property="city"></result>
+    </resultMap>
+    <!--查询所有的企业数据-->
+    <select id="findAll" resultMap="BaseResultMap">
+      select * from ss_company
+   </select>
+
+    <!--  void save(Company company);
+        insert into 表名(字段名称, 字段名称) values(值, 值)
+        insert into ss_company(id, name) values(#{id}, #{name})
+
+    -->
+    <insert id="save" parameterType="com.itheima.domain.company.Company">
+        insert into ss_company
+        (
+          id,name,expiration_date,address,license_id,representative,phone,company_size,industry,remarks,state,balance,city
+        )
+        values
+        (
+#{id},#{name},#{expirationDate},#{address},#{licenseId},#{representative},#{phone},#{companySize},#{industry},#{remarks},#{state},#{balance},#{city}
+        )
+    </insert>
+
+    <!-- Company findById(String id);-->
+    <select id="findById" resultMap="BaseResultMap">
+        select * from ss_company where id  = #{id}
+    </select>
+
+    <!--
+    //修改企业数据
+    void update(Company company);
+    update 表名 set 字段名称= 值 , 字段名称= 值 where id= 值
+    -->
+    <update id="update" parameterType="com.itheima.domain.company.Company">
+        update ss_company set
+          name=#{name},
+          expiration_date=#{expirationDate},
+          address=#{address},
+          license_id=#{licenseId},
+          representative=#{representative},
+          phone=#{phone},
+          company_size=#{companySize},
+          industry=#{industry},
+          remarks=#{remarks},
+          state=#{state},
+          balance=#{balance},
+          city=#{city}
+          where id = #{id}
+    </update>
+
+    <!--
+     //删除企业数据
+    void delete(String id);
+    -->
+    <delete id="delete" parameterType="string">
+        delete from ss_company where id = #{id}
+    </delete>
+
+    <!--
+     //分页  @Param("startIndex") 表示的含义: 就是在配置文件中使用的名称
+    public List<Company> findByPage(@Param("startIndex") int startIndex  ,@Param("pageSize") int  pageSize);
+    -->
+    <select id="findByPage" resultMap="BaseResultMap" >
+        select * from ss_company limit #{startIndex} , #{pageSize}
+    </select>
+
+    <!--
+     //查询总记录数
+    long findCount();
+    -->
+    <select id="findCount" resultType="long">
+        select count(*) from ss_company
+    </select>
+</mapper>
